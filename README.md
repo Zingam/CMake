@@ -6,5 +6,6 @@ CMake Examples
 ```
 
 * GoogleTest - Integrating Google Test
+* SDL2 - Integrating SDL2 library in a project
 
 
