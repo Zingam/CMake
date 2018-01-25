@@ -6,6 +6,7 @@ CMake Examples
 ```
 
 * GoogleTest - Integrating Google Test
+* libvpx - Integrating SDL2 library in a project
+* OpenAL-Soft - Integrating OpenAL-Soft library in a project
+* Opus - Integrating Opus library in a project
 * SDL2 - Integrating SDL2 library in a project
-
-
