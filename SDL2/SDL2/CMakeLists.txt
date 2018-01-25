@@ -24,3 +24,5 @@ project (${ProjectName} VERSION ${ProjectVersion})
 
 add_subdirectory ("SDL2_Library")
 add_subdirectory ("SDL2-Test")
+
+################################################################################

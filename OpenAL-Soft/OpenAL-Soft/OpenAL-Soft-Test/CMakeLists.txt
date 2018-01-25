@@ -4,7 +4,11 @@
 
 cmake_minimum_required (VERSION 3.10)
 
+################################################################################
+
 message ("${ProjectName}: Configuring ${ProjectName}")
+
+################################################################################
 
 add_executable ("${ProjectName}" "Sources/main.cpp")
 target_link_libraries("${ProjectName}"

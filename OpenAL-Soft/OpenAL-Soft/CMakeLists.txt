@@ -24,3 +24,6 @@ project (${ProjectName} VERSION ${ProjectVersion})
 
 add_subdirectory ("OpenAL-Soft_Library")
 add_subdirectory ("OpenAL-Soft-Test")
+
+################################################################################
+

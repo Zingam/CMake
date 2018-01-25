@@ -1,6 +1,17 @@
-message ("SDL-Test: Configuring SDL-Test")
-add_executable ("SDL-Test" "Sources/main.cpp")
-target_link_libraries("SDL-Test"
+################################################################################
+# Project: SDL2
+################################################################################
+
+cmake_minimum_required (VERSION 3.10)
+
+################################################################################
+
+message ("${ProjectName}: Configuring ${ProjectName}")
+
+################################################################################
+
+add_executable ("${ProjectName}" "Sources/main.cpp")
+target_link_libraries("${ProjectName}"
   "SDL2_Library"
 )
 
@@ -8,5 +19,7 @@ add_custom_command (TARGET "SDL-Test"
   POST_BUILD 
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
       $<TARGET_FILE:SDL2>
-      $<TARGET_FILE_DIR:SDL-Test>
+      $<TARGET_FILE_DIR:${ProjectName}>
 )
+
+################################################################################
