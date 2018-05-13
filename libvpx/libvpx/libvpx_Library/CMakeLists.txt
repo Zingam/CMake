@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.10)
 
 set (SubprojectName "libvpx")
 set (SubprojectVersion "0.1.0.0") # MAJOR.MINOR.PATCH.TWEAK
-set (SubprojectURL "https://github.com/ShiftMediaProject/libvpx/releases/download/v1.6.1-3/libvpx_v1.6.1-3_msvc15.zip")
+set (SubprojectURL "https://github.com/ShiftMediaProject/libvpx/releases/download/v1.7.0/libvpx_v1.7.0_msvc15.zip")
 set (SubprojectTargetNames "libvpx")
 
 # Only one of the variables DynamicLibraryName or StaticLibraryName can be 
