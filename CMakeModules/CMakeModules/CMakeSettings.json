@@ -9,7 +9,7 @@
       "buildRoot": "${workspaceRoot}\\..\\__build-output\\${name}",
       "installRoot": "${workspaceRoot}\\..\\__install-output",
       "cmakeCommandArgs": "",
-            "variables": [
+      "variables": [
       ],
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
@@ -22,9 +22,24 @@
       "buildRoot": "${workspaceRoot}\\..\\__build-output\\${name}",
       "installRoot": "${workspaceRoot}\\..\\__install-output",
       "cmakeCommandArgs": "",
-            "variables": [
+      "variables": [
       ],
       "buildCommandArgs": "-v",
+      "ctestCommandArgs": ""
+    },
+    ////////////////////////////////////////////////////////////////////////////
+    // MSVC-VS2017-x64-Debug
+    ////////////////////////////////////////////////////////////////////////////
+    {
+      "name": "MSVC-VS2017-x64-Debug",
+      "generator": "Visual Studio 15 2017 Win64",
+      "configurationType": "Debug",
+      "buildRoot": "${workspaceRoot}\\..\\__build-output\\${name}",
+      "installRoot": "${workspaceRoot}\\..\\__install-output",
+      "cmakeCommandArgs": "",
+      "variables": [
+      ],
+      "buildCommandArgs": "-m -v:minimal",
       "ctestCommandArgs": ""
     }
   ]

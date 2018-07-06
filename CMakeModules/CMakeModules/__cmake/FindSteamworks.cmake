@@ -6,8 +6,9 @@
 #     Steamworks::Steamworks
 #   * Variables:
 #     Steamworks_FOUND
-#     Steamworks_INCLUDE_DIRS
+#     Steamworks_LIBRARY
 #     Steamworks_LIBRARIES
+#     Steamworks_INCLUDE_DIR
 ################################################################################
 
 
@@ -64,6 +65,8 @@ find_library (sdkencryptedappticket_LIBRARY
   PATH_SUFFIXES
     "/public/steam/lib/${LibrarySearchPathSuffix}"
 )
+# Hide internal implementation details from user
+set_property (CACHE sdkencryptedappticket_LIBRARY PROPERTY TYPE INTERNAL)
 if (sdkencryptedappticket_LIBRARY)
   list (APPEND Steamworks_LIBRARIES "${sdkencryptedappticket_LIBRARY}")
 endif ()
@@ -78,6 +81,8 @@ find_library (steam_api_LIBRARY
   PATH_SUFFIXES
     "/redistributable_bin/${LibrarySearchPathSuffix}"
 )
+# Hide internal implementation details from user
+set_property (CACHE steam_api_LIBRARY PROPERTY TYPE INTERNAL)
 if (steam_api_LIBRARY)
   list (APPEND Steamworks_LIBRARIES "${steam_api_LIBRARY}")
 endif ()
@@ -89,19 +94,20 @@ find_package_handle_standard_args (Steamworks
     Steamworks_INCLUDE_DIR
 )
 mark_as_advanced (
-    Steamworks_LIBRARY 
+    Steamworks_LIBRARY
+    Steamworks_LIBRARIES
     Steamworks_INCLUDE_DIR
 )
 
-if (Steamworks_FOUND AND NOT TARGET Steamworks::Steamworks)
-  add_library (Steamworks::Steamworks UNKNOWN IMPORTED)
-  set_target_properties (Steamworks::Steamworks
+if (Steamworks_FOUND AND NOT TARGET REngine::Steamworks)
+  add_library (REngine::Steamworks UNKNOWN IMPORTED)
+  set_target_properties (REngine::Steamworks
     PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES
         "${Steamworks_INCLUDE_DIR}"
       IMPORTED_LOCATION
         "${steam_api_LIBRARY}"
-      IMPORTED_LINK_INTERFACE_LIBRARIES
-        "${sdkencryptedappticket_LIBRARY}"
+      INTERFACE_LINK_LIBRARIES
+        "${Steamworks_LIBRARIES}"
   )
 endif ()

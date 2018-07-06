@@ -3,24 +3,22 @@
 #    https://trenki2.github.io/blog/2017/06/02/using-sdl2-with-cmake/
 ################################################################################
 
-# Distributed under the OSI-approved BSD 3-Clause License. See accompanying
-# file Copyright.txt or https://cmake.org/licensing for details.
+################################################################################
+# Module: FindSDL2
+################################################################################
+# Defines:
+#   * Imported targets:
+#     REngine::SDL2
+#   * Variables:
+#     SDL2_FOUND          - If false, do not try to link to SDL
+#     SDL2_LIBRARY        - The name of the library to link against
+#     SDL2_LIBRARIES      - 
+#     SDL2_INCLUDE_DIR    - The location of SDL.h
+#     SDL2_VERSION_STRING - Human-readable string containing the version of SDL
+################################################################################
 #
-# FindSDL2
-# -------
-#
-# Locate SDL2 library
-#
-# This module defines:
-#
-# SDL2_LIBRARY, the name of the library to link against
-# SDL2_FOUND, if false, do not try to link to SDL
-# SDL2_INCLUDE_DIR, where to find SDL.h
-# SDL2_VERSION_STRING, human-readable string containing the version of SDL
-#
-# This module responds to the flag:
-#
-# SDL2_BUILDING_LIBRARY
+# Flags:
+#   SDL2_BUILDING_LIBRARY
 # If this is defined, then no SDL2_main will be linked in because
 # only applications need main().
 # Otherwise, it is assumed you are building an application and this
@@ -62,6 +60,7 @@
 # This needed to change because "proper" SDL convention is #include
 # "SDL.h", not <SDL/SDL.h>. This is done for portability reasons
 # because not all systems place things in SDL/ (see FreeBSD).
+################################################################################
 
 if (NOT SDL2_DIR)
   set (SDL2_DIR "" CACHE PATH "SDL2 directory")
@@ -88,7 +87,7 @@ endif ()
 
 # SDL-1.1 is the name used by FreeBSD ports...
 # don't confuse it for the version number.
-find_library (SDL2_LIBRARY_TEMP
+find_library (SDL2_LIBRARY
   NAMES
     "SDL2"
   HINTS
@@ -100,11 +99,7 @@ find_library (SDL2_LIBRARY_TEMP
     "lib"
     "${VC_LIB_PATH_SUFFIX}"
 )
-
-# Hide this cache variable from the user, it's an internal implementation
-# detail. The documented library variable for the user is SDL2_LIBRARY
-# which is derived from SDL2_LIBRARY_TEMP further below.
-set_property (CACHE SDL2_LIBRARY_TEMP PROPERTY TYPE INTERNAL)
+set (SDL2_LIBRARY_TEMP ${SDL2_LIBRARY})
 
 if (NOT SDL2_BUILDING_LIBRARY)
   if (NOT SDL2_INCLUDE_DIR MATCHES ".framework")
@@ -179,7 +174,7 @@ if (SDL2_LIBRARY_TEMP)
   endif ()
 
   # Set the final string here so the GUI reflects the final state.
-  set (SDL2_LIBRARY ${SDL2_LIBRARY_TEMP} CACHE STRING "Where the SDL Library can be found")
+  set (SDL2_LIBRARIES ${SDL2_LIBRARY_TEMP} CACHE STRING "Where the SDL Library can be found")
 endif ()
 
 if (SDL2_INCLUDE_DIR AND EXISTS "${SDL2_INCLUDE_DIR}/SDL2_version.h")
@@ -212,15 +207,32 @@ if (SDL2_INCLUDE_DIR AND EXISTS "${SDL2_INCLUDE_DIR}/SDL2_version.h")
   unset (SDL2_VERSION_PATCH)
 endif ()
 
-set (SDL2_LIBRARIES ${SDL2_LIBRARY})
-set (SDL2_INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
-
-FIND_PACKAGE_HANDLE_STANDARD_ARGS (SDL
+FIND_PACKAGE_HANDLE_STANDARD_ARGS (SDL2
   REQUIRED_VARS
+    SDL2_LIBRARY
     SDL2_LIBRARIES
-    SDL2_INCLUDE_DIRS
+    SDL2_INCLUDE_DIR
   VERSION_VAR
     SDL2_VERSION_STRING
 )
 
-mark_as_advanced (SDL2_LIBRARY SDL2_INCLUDE_DIR)
+mark_as_advanced (
+  SDL2_LIBRARY
+  SDL2_LIBRARIES
+  SDL2_INCLUDE_DIR
+)
+
+if (SDL2_FOUND AND NOT TARGET REngine::SDL2)
+  add_library (REngine::SDL2 UNKNOWN IMPORTED)
+  set (InterfaceLinkLibraries ${SDL2_LIBRARIES})
+  list (REMOVE_ITEM InterfaceLinkLibraries ${SDL2_LIBRARY})
+  set_target_properties (REngine::SDL2
+    PROPERTIES
+      INTERFACE_INCLUDE_DIRECTORIES
+        "${SDL2_INCLUDE_DIR}"
+      IMPORTED_LOCATION
+        "${SDL2_LIBRARY}"
+      INTERFACE_LINK_LIBRARIES
+        "${InterfaceLinkLibraries}"
+  )
+endif ()

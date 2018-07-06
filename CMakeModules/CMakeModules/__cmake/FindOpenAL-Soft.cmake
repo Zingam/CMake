@@ -70,9 +70,9 @@ mark_as_advanced (
     OpenAL-Soft_INCLUDE_DIR
 )
 
-if (OpenAL-Soft_FOUND AND NOT TARGET OpenAL-Soft::OpenAL-Soft)
-  add_library (OpenAL-Soft::OpenAL-Soft UNKNOWN IMPORTED)
-  set_target_properties (OpenAL-Soft::OpenAL-Soft
+if (OpenAL-Soft_FOUND AND NOT TARGET REngine::OpenAL-Soft)
+  add_library (REngine::OpenAL-Soft UNKNOWN IMPORTED)
+  set_target_properties (REngine::OpenAL-Soft
     PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES
         "${OpenAL-Soft_INCLUDE_DIR}"
