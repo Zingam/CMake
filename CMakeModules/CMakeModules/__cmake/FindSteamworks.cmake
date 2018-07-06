@@ -3,12 +3,12 @@
 ################################################################################
 # Defines:
 #   * Imported targets:
-#     Steamworks::Steamworks
+#       REngine::Steamworks
 #   * Variables:
-#     Steamworks_FOUND
-#     Steamworks_LIBRARY
-#     Steamworks_LIBRARIES
-#     Steamworks_INCLUDE_DIR
+#       Steamworks_FOUND
+#       Steamworks_LIBRARY
+#       Steamworks_LIBRARIES
+#       Steamworks_INCLUDE_DIR
 ################################################################################
 
 

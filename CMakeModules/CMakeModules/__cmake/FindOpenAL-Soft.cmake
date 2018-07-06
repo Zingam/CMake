@@ -3,13 +3,12 @@
 ################################################################################
 # Defines:
 #   * Imported targets:
-#     OpenAL-Soft::OpenAL-Soft
+#       REngine::OpenAL-Soft
 #   * Variables:
-#     OpenAL-Soft_FOUND
-#     OpenAL-Soft_INCLUDE_DIRS
-#     OpenAL-Soft_LIBRARIES
+#       OpenAL-Soft_FOUND
+#       OpenAL-Soft_INCLUDE_DIRS
+#       OpenAL-Soft_LIBRARIES
 ################################################################################
-
 
 # Search path suffix corresponding to the platform
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
@@ -41,23 +40,31 @@ else ()
   message (FATAL_ERROR "Unsupported architecture: ${CMAKE_SIZEOF_VOID_P} bit")
 endif ()
 
+set (HeaderFile "AL/al.h")
 find_path (OpenAL-Soft_INCLUDE_DIR
   NAMES
-    "AL/al.h"
+    ${HeaderFile}
   PATHS
     "$ENV{IVENT_SOTS_EXTERNALIBS}/OpenAL-Soft"
   PATH_SUFFIXES
     "/include"
 )
+if (NOT OpenAL-Soft_INCLUDE_DIR)
+  message (FATAL_ERROR "Unable to find header file: \"${HeaderFile}\"")
+endif ()
 
+set (LibraryFile "OpenAL32")
 find_library (OpenAL-Soft_LIBRARY
   NAMES
-    "OpenAL32"
+    ${LibraryFile}
   PATHS
     "$ENV{IVENT_SOTS_EXTERNALIBS}/OpenAL-Soft"
   PATH_SUFFIXES
     "/libs/${LibrarySearchPathSuffix}"
 )
+if (NOT OpenAL-Soft_LIBRARY)
+  message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+endif ()
 
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (OpenAL-Soft

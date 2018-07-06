@@ -8,22 +8,22 @@
 ################################################################################
 # Defines:
 #   * Imported targets:
-#     REngine::SDL2
+#       REngine::SDL2
 #   * Variables:
-#     SDL2_FOUND          - If false, do not try to link to SDL
-#     SDL2_LIBRARY        - The name of the library to link against
-#     SDL2_LIBRARIES      - 
-#     SDL2_INCLUDE_DIR    - The location of SDL.h
-#     SDL2_VERSION_STRING - Human-readable string containing the version of SDL
+#       SDL2_FOUND          - If false, do not try to link to SDL
+#       SDL2_LIBRARY        - The name of the library to link against
+#       SDL2_LIBRARIES      - 
+#       SDL2_INCLUDE_DIR    - The location of SDL.h
+#       SDL2_VERSION_STRING - String containing the version of SDL
 ################################################################################
 #
 # Flags:
 #   SDL2_BUILDING_LIBRARY
-# If this is defined, then no SDL2_main will be linked in because
-# only applications need main().
-# Otherwise, it is assumed you are building an application and this
-# module will attempt to locate and set the proper link flags
-# as part of the returned SDL2_LIBRARY variable.
+#
+# If this is defined, then no SDL2_main will be linked in because only 
+# applications need main(). Otherwise, it is assumed you are building an 
+# application and this module will attempt to locate and set the proper link
+# flags as part of the returned SDL2_LIBRARY variable.
 #
 # Don't forget to include SDLmain.h and SDLmain.m your project for the
 # OS X framework based version. (Other versions link to -lSDLmain which
@@ -174,7 +174,9 @@ if (SDL2_LIBRARY_TEMP)
   endif ()
 
   # Set the final string here so the GUI reflects the final state.
-  set (SDL2_LIBRARIES ${SDL2_LIBRARY_TEMP} CACHE STRING "Where the SDL Library can be found")
+  set (SDL2_LIBRARIES ${SDL2_LIBRARY_TEMP} CACHE STRING
+    "Where the SDL Library can be found"
+  )
 endif ()
 
 if (SDL2_INCLUDE_DIR AND EXISTS "${SDL2_INCLUDE_DIR}/SDL2_version.h")
