@@ -92,9 +92,10 @@ endif ()
 
 # SDL-1.1 is the name used by FreeBSD ports...
 # don't confuse it for the version number.
+set (LibraryFile "SDL2")
 find_library (SDL2_LIBRARY
   NAMES
-    "SDL2"
+    ${LibraryFile}
   HINTS
     ENV SDLDIR
     "${SDL2_DIR}"
@@ -105,6 +106,22 @@ find_library (SDL2_LIBRARY
     "${VC_LIB_PATH_SUFFIX}"
 )
 set (SDL2_LIBRARY_TEMP ${SDL2_LIBRARY})
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set (LibraryFile "${LibraryFile}.dll")
+  find_file (SDL2_SHARED_LIBRARY
+    NAMES
+      ${LibraryFile}
+    PATHS
+      "$ENV{IVENT_SOTS_EXTERNALIBS}/SDL2"
+    PATH_SUFFIXES
+      "/lib/${LibrarySearchPathSuffix}"
+  )
+  # Hide internal implementation details from user
+  set_property (CACHE SDL2_SHARED_LIBRARY PROPERTY TYPE INTERNAL)
+  if (NOT SDL2_SHARED_LIBRARY)
+    message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+  endif ()
+endif ()
 
 if (NOT SDL2_BUILDING_LIBRARY)
   if (NOT SDL2_INCLUDE_DIR MATCHES ".framework")
@@ -112,9 +129,10 @@ if (NOT SDL2_BUILDING_LIBRARY)
     # SDLmain. This is mainly for Windows and OS X. Other (Unix) platforms
     # seem to provide SDLmain for compatibility even though they don't
     # necessarily need it.
+    set (LibraryFile "SDL2main")
     find_library (SDL2MAIN_LIBRARY
       NAMES
-        "SDL2main"
+        ${LibraryFile}
       HINTS
         ENV SDLDIR
         "${SDL2_DIR}"
@@ -129,7 +147,7 @@ if (NOT SDL2_BUILDING_LIBRARY)
       "/opt/csw"
       "/opt"
     )
-  endif()
+  endif ()
 endif()
 
 # SDL may require threads on your system.
@@ -221,17 +239,19 @@ endif ()
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (SDL2
   REQUIRED_VARS
+    SDL2_INCLUDE_DIR
     SDL2_LIBRARY
     SDL2_LIBRARIES
-    SDL2_INCLUDE_DIR
+    SDL2_SHARED_LIBRARY
   VERSION_VAR
     SDL2_VERSION_STRING
 )
 
 mark_as_advanced (
+  SDL2_INCLUDE_DIR
   SDL2_LIBRARY
   SDL2_LIBRARIES
-  SDL2_INCLUDE_DIR
+  SDL2_SHARED_LIBRARY
 )
 
 ################################################################################

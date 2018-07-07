@@ -20,8 +20,6 @@ if (NOT LibVPX_FOUND)
 endif()
 list (APPEND SharedLibraries ${LibVPX_SHARED_LIBRARY})
 
-message (====> "${SharedLibraries}")
-
 find_package (OpenAL-Soft REQUIRED)
 if (NOT OpenAL-Soft_FOUND)
   message ("ERROR: OpenAL-Soft SDK was not found in the search path!")
@@ -38,6 +36,7 @@ find_package (SDL2 REQUIRED)
 if (NOT SDL2_FOUND)
   message ("ERROR: SDL2 SDK was not found in the search path!")
 endif()
+list (APPEND SharedLibraries ${SDL2_SHARED_LIBRARY})
 
 find_package (Steamworks REQUIRED)
 if (NOT Steamworks_FOUND)
