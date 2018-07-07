@@ -7,7 +7,7 @@
 #   * Variables:
 #       Opus_FOUND
 #       Opus_INCLUDE_DIRS
-#       Opus_LIBRARIES
+#       Opus_LIBRARY
 ################################################################################
 
 # Search path suffix corresponding to the platform
@@ -22,6 +22,10 @@ else ()
   message (FATAL_ERROR "Unsupported architecture: ${CMAKE_SIZEOF_VOID_P} bit")
 endif ()
 
+################################################################################
+# Header files
+################################################################################
+
 set (HeaderFile "opus/opus.h")
 find_path (Opus_INCLUDE_DIR
   NAMES
@@ -34,6 +38,10 @@ find_path (Opus_INCLUDE_DIR
 if (NOT Opus_INCLUDE_DIR)
   message (FATAL_ERROR "Unable to find header file: \"${HeaderFile}\"")
 endif ()
+
+################################################################################
+# Library files
+################################################################################
 
 set (LibraryFile "opus")
 find_library (Opus_LIBRARY
@@ -48,6 +56,10 @@ if (NOT Opus_LIBRARY)
   message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
 endif ()
 
+################################################################################
+# find_package arguments
+################################################################################
+
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (Opus
   DEFAULT_MSG
@@ -59,6 +71,10 @@ mark_as_advanced (
     Opus_INCLUDE_DIR
 )
 
+################################################################################
+# Imported target
+################################################################################
+
 if (Opus_FOUND AND NOT TARGET REngine::Opus)
   add_library (REngine::Opus UNKNOWN IMPORTED)
   set_target_properties (REngine::Opus
@@ -69,3 +85,5 @@ if (Opus_FOUND AND NOT TARGET REngine::Opus)
         "${Opus_LIBRARY}"
   )
 endif ()
+
+################################################################################

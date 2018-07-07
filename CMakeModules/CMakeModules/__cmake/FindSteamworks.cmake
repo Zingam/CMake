@@ -6,9 +6,10 @@
 #       REngine::Steamworks
 #   * Variables:
 #       Steamworks_FOUND
+#       Steamworks_INCLUDE_DIR
 #       Steamworks_LIBRARY
 #       Steamworks_LIBRARIES
-#       Steamworks_INCLUDE_DIR
+#       Steamworks_SHARED_LIBRARIES
 ################################################################################
 
 
@@ -42,23 +43,80 @@ else ()
   message (FATAL_ERROR "Unsupported architecture: ${CMAKE_SIZEOF_VOID_P} bit")
 endif ()
 
+################################################################################
+# Header files
+################################################################################
+
+set (HeaderFile "steam/steam_api.h")
 find_path (Steam_INCLUDE_DIR
   NAMES
-    "steam/steam_api.h"
+    ${HeaderFile}
   PATHS
     "$ENV{IVENT_SOTS_EXTERNALIBS}/Steamworks"
     "$ENV{STEAM_SDK}"
   PATH_SUFFIXES
     "/public"
 )
-if (Steam_INCLUDE_DIR)
+if (NOT Steam_INCLUDE_DIR)
+  message (FATAL_ERROR "Unable to find header file: \"${HeaderFile}\"")
+else ()
   list (APPEND Steamworks_INCLUDE_DIR "${Steam_INCLUDE_DIR}")
 endif ()
 
+################################################################################
+# Library files
+################################################################################
+
+set (LibraryFile "steam_api")
+if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+  set (LibraryFile "${LibraryFile}64")
+endif ()
+find_library (steam_api_LIBRARY
+  NAMES
+    ${LibraryFile}
+  PATHS
+    "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
+    "$ENV{STEAM_SDK}"
+  PATH_SUFFIXES
+    "/redistributable_bin"
+    "/redistributable_bin/${LibrarySearchPathSuffix}"
+)
+# Hide internal implementation details from user
+set_property (CACHE steam_api_LIBRARY PROPERTY TYPE INTERNAL)
+if (NOT steam_api_LIBRARY)
+  message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+else ()
+  list (APPEND Steamworks_LIBRARIES "${steam_api_LIBRARY}")
+endif ()
+
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set (LibraryFile "${LibraryFile}.dll")
+  find_file (steam_api_SHARED_LIBRARY
+    NAMES
+      ${LibraryFile}
+    PATHS
+      "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
+      "$ENV{STEAM_SDK}"
+    PATH_SUFFIXES
+      "/redistributable_bin"
+      "/redistributable_bin/${LibrarySearchPathSuffix}"
+  )
+  # Hide internal implementation details from user
+  set_property (CACHE steam_api_SHARED_LIBRARY PROPERTY TYPE INTERNAL)
+  if (NOT steam_api_SHARED_LIBRARY)
+    message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+  else ()
+    list (APPEND Steamworks_SHARED_LIBRARIES "${steam_api_SHARED_LIBRARY}")
+  endif ()
+endif ()
+
+set (LibraryFile "sdkencryptedappticket")
+if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+  set (LibraryFile "${LibraryFile}64")
+endif ()
 find_library (sdkencryptedappticket_LIBRARY
   NAMES
-    "sdkencryptedappticket"
-    "sdkencryptedappticket64"
+    ${LibraryFile}
   PATHS
     "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
     "$ENV{STEAM_SDK}"
@@ -67,37 +125,53 @@ find_library (sdkencryptedappticket_LIBRARY
 )
 # Hide internal implementation details from user
 set_property (CACHE sdkencryptedappticket_LIBRARY PROPERTY TYPE INTERNAL)
-if (sdkencryptedappticket_LIBRARY)
+if (NOT sdkencryptedappticket_LIBRARY)
+  message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+else ()
   list (APPEND Steamworks_LIBRARIES "${sdkencryptedappticket_LIBRARY}")
 endif ()
 
-find_library (steam_api_LIBRARY
-  NAMES
-    "steam_api"
-    "steam_api64"
-  PATHS
-    "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
-    "$ENV{STEAM_SDK}"
-  PATH_SUFFIXES
-    "/redistributable_bin/${LibrarySearchPathSuffix}"
-)
-# Hide internal implementation details from user
-set_property (CACHE steam_api_LIBRARY PROPERTY TYPE INTERNAL)
-if (steam_api_LIBRARY)
-  list (APPEND Steamworks_LIBRARIES "${steam_api_LIBRARY}")
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set (LibraryFile "${LibraryFile}.dll")
+  find_file (sdkencryptedappticket_SHARED_LIBRARY
+    NAMES
+      ${LibraryFile}
+    PATHS
+      "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
+      "$ENV{STEAM_SDK}"
+    PATH_SUFFIXES
+      "/public/steam/lib/${LibrarySearchPathSuffix}"
+  )
+  # Hide internal implementation details from user
+  set_property (CACHE sdkencryptedappticket_SHARED_LIBRARY PROPERTY TYPE INTERNAL)
+  if (NOT sdkencryptedappticket_SHARED_LIBRARY)
+    message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+  else ()
+    list (APPEND Steamworks_SHARED_LIBRARIES "${sdkencryptedappticket_SHARED_LIBRARY}")
+  endif ()
 endif ()
+
+################################################################################
+# find_package arguments
+################################################################################
 
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (Steamworks
   DEFAULT_MSG
-    Steamworks_LIBRARIES
     Steamworks_INCLUDE_DIR
+    Steamworks_LIBRARIES
+    Steamworks_SHARED_LIBRARIES
 )
 mark_as_advanced (
+    Steamworks_INCLUDE_DIR
     Steamworks_LIBRARY
     Steamworks_LIBRARIES
-    Steamworks_INCLUDE_DIR
+    Steamworks_SHARED_LIBRARIES
 )
+
+################################################################################
+# Imported target
+################################################################################
 
 if (Steamworks_FOUND AND NOT TARGET REngine::Steamworks)
   add_library (REngine::Steamworks UNKNOWN IMPORTED)
@@ -111,3 +185,5 @@ if (Steamworks_FOUND AND NOT TARGET REngine::Steamworks)
         "${Steamworks_LIBRARIES}"
   )
 endif ()
+
+################################################################################

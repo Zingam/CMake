@@ -7,7 +7,8 @@
 #   * Variables:
 #       Vorbis_FOUND
 #       Vorbis_INCLUDE_DIRS
-#       Vorbis_LIBRARIES
+#       Vorbis_LIBRARY
+#       Vorbis_SHARED_LIBRARY
 ################################################################################
 
 # Search path suffix corresponding to the platform
@@ -22,6 +23,10 @@ else ()
   message (FATAL_ERROR "Unsupported architecture: ${CMAKE_SIZEOF_VOID_P} bit")
 endif ()
 
+################################################################################
+# Header files
+################################################################################
+
 set (HeaderFile "vorbis/codec.h")
 find_path (Vorbis_INCLUDE_DIR
   NAMES
@@ -34,6 +39,10 @@ find_path (Vorbis_INCLUDE_DIR
 if (NOT Vorbis_INCLUDE_DIR)
   message (FATAL_ERROR "Unable to find header file: \"${HeaderFile}\"")
 endif ()
+
+################################################################################
+# Library files
+################################################################################
 
 set (LibraryFile "vorbis")
 find_library (Vorbis_LIBRARY
@@ -48,16 +57,44 @@ if (NOT Vorbis_LIBRARY)
   message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
 endif ()
 
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set (LibraryFile "${LibraryFile}.dll")
+  find_file (Vorbis_SHARED_LIBRARY
+    NAMES
+      ${LibraryFile}
+    PATHS
+  PATHS
+    "$ENV{IVENT_SOTS_EXTERNALIBS}/Vorbis"
+  PATH_SUFFIXES
+    "/bin/${LibrarySearchPathSuffix}"
+  )
+  # Hide internal implementation details from user
+  set_property (CACHE Vorbis_SHARED_LIBRARY PROPERTY TYPE INTERNAL)
+  if (NOT Vorbis_SHARED_LIBRARY)
+    message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+  endif ()
+endif ()
+
+################################################################################
+# find_package arguments
+################################################################################
+
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (Vorbis
   DEFAULT_MSG
-    Vorbis_LIBRARY
     Vorbis_INCLUDE_DIR
+    Vorbis_LIBRARY
+    Vorbis_SHARED_LIBRARY
 )
 mark_as_advanced (
-    Vorbis_LIBRARY 
     Vorbis_INCLUDE_DIR
+    Vorbis_LIBRARY
+    Vorbis_SHARED_LIBRARY
 )
+
+################################################################################
+# Imported target
+################################################################################
 
 if (Vorbis_FOUND AND NOT TARGET REngine::Vorbis)
   add_library (REngine::Vorbis UNKNOWN IMPORTED)
@@ -69,3 +106,5 @@ if (Vorbis_FOUND AND NOT TARGET REngine::Vorbis)
         "${Vorbis_LIBRARY}"
   )
 endif ()
+
+################################################################################

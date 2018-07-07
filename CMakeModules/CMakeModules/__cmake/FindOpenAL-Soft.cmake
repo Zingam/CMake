@@ -7,7 +7,7 @@
 #   * Variables:
 #       OpenAL-Soft_FOUND
 #       OpenAL-Soft_INCLUDE_DIRS
-#       OpenAL-Soft_LIBRARIES
+#       OpenAL-Soft_LIBRARY
 ################################################################################
 
 # Search path suffix corresponding to the platform
@@ -40,6 +40,10 @@ else ()
   message (FATAL_ERROR "Unsupported architecture: ${CMAKE_SIZEOF_VOID_P} bit")
 endif ()
 
+################################################################################
+# Header files
+################################################################################
+
 set (HeaderFile "AL/al.h")
 find_path (OpenAL-Soft_INCLUDE_DIR
   NAMES
@@ -52,6 +56,10 @@ find_path (OpenAL-Soft_INCLUDE_DIR
 if (NOT OpenAL-Soft_INCLUDE_DIR)
   message (FATAL_ERROR "Unable to find header file: \"${HeaderFile}\"")
 endif ()
+
+################################################################################
+# Library files
+################################################################################
 
 set (LibraryFile "OpenAL32")
 find_library (OpenAL-Soft_LIBRARY
@@ -66,6 +74,10 @@ if (NOT OpenAL-Soft_LIBRARY)
   message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
 endif ()
 
+################################################################################
+# find_package arguments
+################################################################################
+
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (OpenAL-Soft
   DEFAULT_MSG
@@ -77,6 +89,10 @@ mark_as_advanced (
     OpenAL-Soft_INCLUDE_DIR
 )
 
+################################################################################
+# Imported target
+################################################################################
+
 if (OpenAL-Soft_FOUND AND NOT TARGET REngine::OpenAL-Soft)
   add_library (REngine::OpenAL-Soft UNKNOWN IMPORTED)
   set_target_properties (REngine::OpenAL-Soft
@@ -87,3 +103,5 @@ if (OpenAL-Soft_FOUND AND NOT TARGET REngine::OpenAL-Soft)
         "${OpenAL-Soft_LIBRARY}"
   )
 endif ()
+
+################################################################################

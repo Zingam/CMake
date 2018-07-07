@@ -1,9 +1,4 @@
 ################################################################################
-# Adopted rom:
-#    https://trenki2.github.io/blog/2017/06/02/using-sdl2-with-cmake/
-################################################################################
-
-################################################################################
 # Module: FindSDL2
 ################################################################################
 # Defines:
@@ -66,7 +61,13 @@ if (NOT SDL2_DIR)
   set (SDL2_DIR "" CACHE PATH "SDL2 directory")
 endif ()
 
-find_path (SDL2_INCLUDE_DIR SDL.h
+################################################################################
+# Header files
+################################################################################
+
+find_path (SDL2_INCLUDE_DIR
+  NAMES
+    "SDL.h"
   HINTS
     ENV SDLDIR
     "${SDL2_DIR}"
@@ -78,6 +79,10 @@ find_path (SDL2_INCLUDE_DIR SDL.h
     "/include/SDL2"
     "/include"
 )
+
+################################################################################
+# Library files
+################################################################################
 
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
   set (VC_LIB_PATH_SUFFIX lib/x64)
@@ -209,7 +214,12 @@ if (SDL2_INCLUDE_DIR AND EXISTS "${SDL2_INCLUDE_DIR}/SDL2_version.h")
   unset (SDL2_VERSION_PATCH)
 endif ()
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS (SDL2
+################################################################################
+# find_package arguments
+################################################################################
+
+include (FindPackageHandleStandardArgs)
+find_package_handle_standard_args (SDL2
   REQUIRED_VARS
     SDL2_LIBRARY
     SDL2_LIBRARIES
@@ -223,6 +233,10 @@ mark_as_advanced (
   SDL2_LIBRARIES
   SDL2_INCLUDE_DIR
 )
+
+################################################################################
+# Imported target
+################################################################################
 
 if (SDL2_FOUND AND NOT TARGET REngine::SDL2)
   add_library (REngine::SDL2 UNKNOWN IMPORTED)
@@ -238,3 +252,5 @@ if (SDL2_FOUND AND NOT TARGET REngine::SDL2)
         "${InterfaceLinkLibraries}"
   )
 endif ()
+
+################################################################################

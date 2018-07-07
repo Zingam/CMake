@@ -7,7 +7,7 @@
 #   * Variables:
 #       LibVPX_FOUND
 #       LibVPX_INCLUDE_DIRS
-#       LibVPX_LIBRARIES
+#       LibVPX_LIBRARY
 ################################################################################
 
 # Search path suffix corresponding to the platform
@@ -22,6 +22,10 @@ else ()
   message (FATAL_ERROR "Unsupported architecture: ${CMAKE_SIZEOF_VOID_P} bit")
 endif ()
 
+################################################################################
+# Header files
+################################################################################
+
 set (HeaderFile "vpx/vp8.h")
 find_path (LibVPX_INCLUDE_DIR
   NAMES
@@ -34,6 +38,10 @@ find_path (LibVPX_INCLUDE_DIR
 if (NOT LibVPX_INCLUDE_DIR)
   message (FATAL_ERROR "Unable to find header file: \"${HeaderFile}\"")
 endif ()
+
+################################################################################
+# Library files
+################################################################################
 
 set (LibraryFile "vpx")
 find_library (LibVPX_LIBRARY
@@ -48,6 +56,10 @@ if (NOT LibVPX_LIBRARY)
   message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
 endif ()
 
+################################################################################
+# find_package arguments
+################################################################################
+
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (LibVPX
   DEFAULT_MSG
@@ -59,6 +71,10 @@ mark_as_advanced (
     LibVPX_INCLUDE_DIR
 )
 
+################################################################################
+# Imported target
+################################################################################
+
 if (LibVPX_FOUND AND NOT TARGET REngine::LibVPX)
   add_library (REngine::LibVPX UNKNOWN IMPORTED)
   set_target_properties (REngine::LibVPX
@@ -69,3 +85,5 @@ if (LibVPX_FOUND AND NOT TARGET REngine::LibVPX)
         "${LibVPX_LIBRARY}"
   )
 endif ()
+
+################################################################################

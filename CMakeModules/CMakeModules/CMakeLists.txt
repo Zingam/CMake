@@ -8,7 +8,11 @@ cmake_minimum_required (VERSION 3.10)
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/__cmake")
 ################################################################################
 
+################################################################################
+# Project name
+################################################################################
 project ("CMakeModules")
+################################################################################
 
 find_package (LibVPX REQUIRED)
 if (NOT LibVPX_FOUND)
@@ -34,11 +38,13 @@ find_package (Steamworks REQUIRED)
 if (NOT Steamworks_FOUND)
   message ("ERROR: Steamworks SDK was not found in the search path!")
 endif()
+list (APPEND SharedLibraries ${Steamworks_SHARED_LIBRARIES})
 
 find_package (Vorbis REQUIRED)
 if (NOT Vorbis_FOUND)
   message ("ERROR: Vorbis SDK was not found in the search path!")
 endif()
+list (APPEND SharedLibraries ${Vorbis_SHARED_LIBRARY})
 
 add_executable (${PROJECT_NAME}
   "Source/main.cpp"
@@ -51,3 +57,12 @@ target_link_libraries (${PROJECT_NAME}
   REngine::Steamworks
   REngine::Vorbis
 )
+
+################################################################################
+# Install
+################################################################################
+message ("Shared libraries to install:")
+foreach (SharedLibrary ${SharedLibraries})
+  message ("    ${SharedLibrary}")
+endforeach ()
+################################################################################
