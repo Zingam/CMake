@@ -81,7 +81,7 @@ int main (int argc, char *argv [])
         ChannelCount,
         &opusError
     );
-    if (OPUS_OK != opusError)
+    if (OPUS_OK == opusError)
     {
         initializedLibraries.emplace_back ("Opus");
     }
@@ -91,7 +91,7 @@ int main (int argc, char *argv [])
     }
 
     auto sdlResult = SDL_Init (SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-    if (sdlResult)
+    if (0 == sdlResult)
     {
         initializedLibraries.emplace_back ("SDL2");
     }
@@ -101,6 +101,15 @@ int main (int argc, char *argv [])
         uninitializedLibraries.emplace_back (errorMessage);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Steam API documentation: https://partner.steamgames.com/doc/sdk/api
+    ////////////////////////////////////////////////////////////////////////////
+    // To initialize the Steam API an App ID is required. To provide an App ID
+    // during development create the text file called steam_appid.txt next to
+    // the executable containing just the App ID and nothing else.
+    ////////////////////////////////////////////////////////////////////////////
+    // Generic App ID: 480
+    ////////////////////////////////////////////////////////////////////////////
     auto isSteamInitialized = SteamAPI_Init ();
     if (isSteamInitialized)
     {
@@ -109,6 +118,16 @@ int main (int argc, char *argv [])
     else
     {
         uninitializedLibraries.emplace_back ("Steam");
+    }
+
+    auto isSteamRunning = SteamAPI_IsSteamRunning ();
+    if (isSteamRunning)
+    {
+        std::cout << "Steam is running...\n";
+    }
+    else
+    {
+        std::cout << "Steam is NOT running...\n";
     }
 
     std::cout << "The following libraries have been initialized:\n";
@@ -121,7 +140,7 @@ int main (int argc, char *argv [])
     {
         std::cout << "\n";
         std::cout << "The following libraries failed to initialize:\n";
-        for (auto& libraryName : initializedLibraries)
+        for (auto& libraryName : uninitializedLibraries)
         {
             std::cout << "    " << libraryName << "\n";
         }

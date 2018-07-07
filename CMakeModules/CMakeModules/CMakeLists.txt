@@ -69,4 +69,15 @@ message ("Shared libraries to install:")
 foreach (SharedLibrary ${SharedLibraries})
   message ("    ${SharedLibrary}")
 endforeach ()
+
+set (InstallationFolder "${CMAKE_INSTALL_PREFIX}")
+get_filename_component (InstallationFolder
+  "${InstallationFolder}" ABSOLUTE
+)
+install (TARGETS ${PROJECT_NAME}
+  RUNTIME DESTINATION "${InstallationFolder}"
+)
+install (FILES ${SharedLibraries}
+  DESTINATION "${InstallationFolder}"
+)
 ################################################################################
