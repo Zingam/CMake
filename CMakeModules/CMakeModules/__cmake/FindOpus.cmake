@@ -8,6 +8,7 @@
 #       Opus_FOUND
 #       Opus_INCLUDE_DIRS
 #       Opus_LIBRARY
+#       Opus_SHARED_LIBRARY
 ################################################################################
 
 # Search path suffix corresponding to the platform
@@ -56,6 +57,23 @@ if (NOT Opus_LIBRARY)
   message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
 endif ()
 
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set (LibraryFile "${LibraryFile}.dll")
+  find_file (Opus_SHARED_LIBRARY
+    NAMES
+      ${LibraryFile}
+    PATHS
+      "$ENV{IVENT_SOTS_EXTERNALIBS}/Opus"
+    PATH_SUFFIXES
+      "/bin/${LibrarySearchPathSuffix}"
+  )
+  # Hide internal implementation details from user
+  set_property (CACHE Opus_SHARED_LIBRARY PROPERTY TYPE INTERNAL)
+  if (NOT Opus_SHARED_LIBRARY)
+    message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+  endif ()
+endif ()
+
 ################################################################################
 # find_package arguments
 ################################################################################
@@ -63,12 +81,14 @@ endif ()
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (Opus
   DEFAULT_MSG
-    Opus_LIBRARY
     Opus_INCLUDE_DIR
+    Opus_LIBRARY
+    Opus_SHARED_LIBRARY
 )
 mark_as_advanced (
-    Opus_LIBRARY 
     Opus_INCLUDE_DIR
+    Opus_LIBRARY
+    Opus_SHARED_LIBRARY
 )
 
 ################################################################################

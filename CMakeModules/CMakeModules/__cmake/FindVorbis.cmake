@@ -63,10 +63,9 @@ if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     NAMES
       ${LibraryFile}
     PATHS
-  PATHS
-    "$ENV{IVENT_SOTS_EXTERNALIBS}/Vorbis"
-  PATH_SUFFIXES
-    "/bin/${LibrarySearchPathSuffix}"
+      "$ENV{IVENT_SOTS_EXTERNALIBS}/Vorbis"
+    PATH_SUFFIXES
+      "/bin/${LibrarySearchPathSuffix}"
   )
   # Hide internal implementation details from user
   set_property (CACHE Vorbis_SHARED_LIBRARY PROPERTY TYPE INTERNAL)

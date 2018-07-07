@@ -8,6 +8,7 @@
 #       OpenAL-Soft_FOUND
 #       OpenAL-Soft_INCLUDE_DIRS
 #       OpenAL-Soft_LIBRARY
+#       OpenAL-Soft_SHARED_LIBRARY
 ################################################################################
 
 # Search path suffix corresponding to the platform
@@ -74,6 +75,23 @@ if (NOT OpenAL-Soft_LIBRARY)
   message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
 endif ()
 
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set (LibraryFile "${LibraryFile}.dll")
+  find_file (OpenAL-Soft_SHARED_LIBRARY
+    NAMES
+      ${LibraryFile}
+    PATHS
+      "$ENV{IVENT_SOTS_EXTERNALIBS}/OpenAL-Soft"
+    PATH_SUFFIXES
+      "/bin/${LibrarySearchPathSuffix}"
+  )
+  # Hide internal implementation details from user
+  set_property (CACHE OpenAL-Soft_SHARED_LIBRARY PROPERTY TYPE INTERNAL)
+  if (NOT OpenAL-Soft_SHARED_LIBRARY)
+    message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+  endif ()
+endif ()
+
 ################################################################################
 # find_package arguments
 ################################################################################
@@ -81,12 +99,14 @@ endif ()
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (OpenAL-Soft
   DEFAULT_MSG
-    OpenAL-Soft_LIBRARY
     OpenAL-Soft_INCLUDE_DIR
+    OpenAL-Soft_LIBRARY
+    OpenAL-Soft_SHARED_LIBRARY
 )
 mark_as_advanced (
-    OpenAL-Soft_LIBRARY 
     OpenAL-Soft_INCLUDE_DIR
+    OpenAL-Soft_LIBRARY 
+    OpenAL-Soft_SHARED_LIBRARY
 )
 
 ################################################################################

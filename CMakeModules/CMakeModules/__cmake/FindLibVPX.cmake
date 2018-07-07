@@ -8,6 +8,7 @@
 #       LibVPX_FOUND
 #       LibVPX_INCLUDE_DIRS
 #       LibVPX_LIBRARY
+#       LibVPX_SHARED_LIBRARY
 ################################################################################
 
 # Search path suffix corresponding to the platform
@@ -56,6 +57,23 @@ if (NOT LibVPX_LIBRARY)
   message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
 endif ()
 
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set (LibraryFile "${LibraryFile}.dll")
+  find_file (LibVPX_SHARED_LIBRARY
+    NAMES
+      ${LibraryFile}
+    PATHS
+      "$ENV{IVENT_SOTS_EXTERNALIBS}/LibVPX"
+    PATH_SUFFIXES
+      "/bin/${LibrarySearchPathSuffix}"
+  )
+  # Hide internal implementation details from user
+  set_property (CACHE LibVPX_SHARED_LIBRARY PROPERTY TYPE INTERNAL)
+  if (NOT LibVPX_SHARED_LIBRARY)
+    message (FATAL_ERROR "Unable to find library file: \"${LibraryFile}\"")
+  endif ()
+endif ()
+
 ################################################################################
 # find_package arguments
 ################################################################################
@@ -63,12 +81,14 @@ endif ()
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (LibVPX
   DEFAULT_MSG
-    LibVPX_LIBRARY
     LibVPX_INCLUDE_DIR
+    LibVPX_LIBRARY
+    LibVPX_SHARED_LIBRARY
 )
 mark_as_advanced (
-    LibVPX_LIBRARY 
     LibVPX_INCLUDE_DIR
+    LibVPX_LIBRARY
+    LibVPX_SHARED_LIBRARY
 )
 
 ################################################################################

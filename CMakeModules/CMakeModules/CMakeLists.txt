@@ -18,16 +18,21 @@ find_package (LibVPX REQUIRED)
 if (NOT LibVPX_FOUND)
   message ("ERROR: LibVPX SDK was not found in the search path!")
 endif()
+list (APPEND SharedLibraries ${LibVPX_SHARED_LIBRARY})
+
+message (====> "${SharedLibraries}")
 
 find_package (OpenAL-Soft REQUIRED)
 if (NOT OpenAL-Soft_FOUND)
   message ("ERROR: OpenAL-Soft SDK was not found in the search path!")
 endif()
+list (APPEND SharedLibraries ${OpenAL-Soft_SHARED_LIBRARY})
 
 find_package (Opus REQUIRED)
 if (NOT Opus_FOUND)
   message ("ERROR: Opus SDK was not found in the search path!")
 endif()
+list (APPEND SharedLibraries ${Opus_SHARED_LIBRARY})
 
 find_package (SDL2 REQUIRED)
 if (NOT SDL2_FOUND)
