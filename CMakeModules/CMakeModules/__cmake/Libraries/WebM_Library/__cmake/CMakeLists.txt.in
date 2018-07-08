@@ -1,0 +1,23 @@
+cmake_minimum_required (VERSION 3.10)
+
+project (${SubprojectName}-download NONE)
+
+################################################################################
+# This is a method to download, configure and build a library at configuration
+# time
+################################################################################
+
+include (ExternalProject)
+
+ExternalProject_Add ("${SubprojectName}"
+  URL               "${SubprojectURL}"
+  PREFIX            "${SubprojectName}"
+  SOURCE_DIR        "${SubprojectName}/${SubprojectName}-source"
+  BINARY_DIR        "${SubprojectName}/${SubprojectName}-binary"
+  # Pass empty string to disable the commands
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND     ""
+  INSTALL_COMMAND   ""
+  TEST_COMMAND      ""
+  CMAKE_ARGS        ${SubprojectArgs}
+)

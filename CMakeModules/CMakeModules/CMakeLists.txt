@@ -14,6 +14,9 @@ list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/__cmake")
 project ("CMakeModules")
 ################################################################################
 
+################################################################################
+# External precompiled libraries
+################################################################################
 find_package (LibVPX REQUIRED)
 if (NOT LibVPX_FOUND)
   message ("ERROR: LibVPX SDK was not found in the search path!")
@@ -50,16 +53,30 @@ if (NOT Vorbis_FOUND)
 endif()
 list (APPEND SharedLibraries ${Vorbis_SHARED_LIBRARY})
 
+################################################################################
+# External online libraries
+#   These libraries will be downloaded from the Internet and configured
+################################################################################
+option (option_DownloadLibrariesLocally NO)
+if (option_DownloadLibrariesLocally)
+  set (WebM_URL "$ENV{IVENT_SOTS_EXTERNALIBS}/WebM/master.zip")
+endif ()
+add_subdirectory ("__cmake/Libraries/WebM_Library")
+
+################################################################################
+# Project target
+################################################################################
 add_executable (${PROJECT_NAME}
   "Source/main.cpp"
 )
 target_link_libraries (${PROJECT_NAME}
-  REngine::LibVPX
-  REngine::OpenAL-Soft
-  REngine::Opus
-  REngine::SDL2
-  REngine::Steamworks
-  REngine::Vorbis
+    REngine::LibVPX
+    REngine::OpenAL-Soft
+    REngine::Opus
+    REngine::SDL2
+    REngine::Steamworks
+    REngine::Vorbis
+    WebM_Library
 )
 
 ################################################################################
@@ -77,7 +94,11 @@ get_filename_component (InstallationFolder
 install (TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION "${InstallationFolder}"
 )
-install (FILES ${SharedLibraries}
+install (
+  FILES
+    ${SharedLibraries}
+    "Media/steam_appid.txt"
+    "Media/sample.webm"
   DESTINATION "${InstallationFolder}"
 )
 ################################################################################

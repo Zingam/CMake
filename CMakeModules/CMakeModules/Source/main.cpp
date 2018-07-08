@@ -10,6 +10,8 @@
 #   include <steam/steam_api.h>
 #pragma warning (pop)
 #include <vorbis/codec.h>
+#include <mkvparser.hpp>
+#include <mkvreader.hpp>
 // C++ Standard Library
 #include <iostream>
 #include <string>
@@ -101,33 +103,43 @@ int main (int argc, char *argv [])
         uninitializedLibraries.emplace_back (errorMessage);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Steam API documentation: https://partner.steamgames.com/doc/sdk/api
-    ////////////////////////////////////////////////////////////////////////////
-    // To initialize the Steam API an App ID is required. To provide an App ID
-    // during development create the text file called steam_appid.txt next to
-    // the executable containing just the App ID and nothing else.
-    ////////////////////////////////////////////////////////////////////////////
-    // Generic App ID: 480
-    ////////////////////////////////////////////////////////////////////////////
-    auto isSteamInitialized = SteamAPI_Init ();
-    if (isSteamInitialized)
-    {
-        initializedLibraries.emplace_back ("Steam");
-    }
-    else
-    {
-        uninitializedLibraries.emplace_back ("Steam");
-    }
-
     auto isSteamRunning = SteamAPI_IsSteamRunning ();
     if (isSteamRunning)
     {
-        std::cout << "Steam is running...\n";
+        ////////////////////////////////////////////////////////////////////////////
+        // Steam API documentation: https://partner.steamgames.com/doc/sdk/api
+        ////////////////////////////////////////////////////////////////////////////
+        // To initialize the Steam API an App ID is required. To provide an App ID
+        // during development create the text file called steam_appid.txt next to
+        // the executable containing just the App ID and nothing else.
+        ////////////////////////////////////////////////////////////////////////////
+        // Generic App ID: 480
+        ////////////////////////////////////////////////////////////////////////////
+        auto isSteamInitialized = SteamAPI_Init ();
+        if (isSteamInitialized)
+        {
+            initializedLibraries.emplace_back ("Steam");
+        }
+        else
+        {
+            uninitializedLibraries.emplace_back ("Steam");
+        }
     }
     else
     {
-        std::cout << "Steam is NOT running...\n";
+        uninitializedLibraries.emplace_back ("Steam: NOT running");
+    }
+
+    FILE* webmFile = nullptr;
+    mkvparser::MkvReader mkvReader { webmFile };
+    auto result = mkvReader.Open ("sample.webm");
+    if (0 == result)
+    {
+        initializedLibraries.emplace_back ("WebM: media file \"sample.webm\" opened successfully");
+    }
+    else
+    {
+        uninitializedLibraries.emplace_back ("WebM - failed to open media file \"sample.webm\"");
     }
 
     std::cout << "The following libraries have been initialized:\n";
