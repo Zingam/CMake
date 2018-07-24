@@ -32,7 +32,7 @@ find_path (LibVPX_INCLUDE_DIR
   NAMES
     ${HeaderFile}
   PATHS
-    "$ENV{IVENT_SOTS_EXTERNALIBS}/LibVPX"
+    "$ENV{__EXTERNAL_LIBS}/LibVPX"
   PATH_SUFFIXES
     "/include"
 )
@@ -49,7 +49,7 @@ find_library (LibVPX_LIBRARY
   NAMES
     ${LibraryFile}
   PATHS
-    "$ENV{IVENT_SOTS_EXTERNALIBS}/LibVPX"
+    "$ENV{__EXTERNAL_LIBS}/LibVPX"
   PATH_SUFFIXES
     "/lib/${LibrarySearchPathSuffix}"
 )
@@ -63,7 +63,7 @@ if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     NAMES
       ${LibraryFile}
     PATHS
-      "$ENV{IVENT_SOTS_EXTERNALIBS}/LibVPX"
+      "$ENV{__EXTERNAL_LIBS}/LibVPX"
     PATH_SUFFIXES
       "/bin/${LibrarySearchPathSuffix}"
   )
@@ -79,17 +79,20 @@ endif ()
 ################################################################################
 
 include (FindPackageHandleStandardArgs)
+
+set (PackageVariables
+  LibVPX_INCLUDE_DIR
+  LibVPX_LIBRARY
+)
+if (LibVPX_SHARED_LIBRARY)
+  set (PackageVariables ${PackageVariables} LibVPX_SHARED_LIBRARY)
+endif ()
+
 find_package_handle_standard_args (LibVPX
   DEFAULT_MSG
-    LibVPX_INCLUDE_DIR
-    LibVPX_LIBRARY
-    LibVPX_SHARED_LIBRARY
+    ${PackageVariables}
 )
-mark_as_advanced (
-    LibVPX_INCLUDE_DIR
-    LibVPX_LIBRARY
-    LibVPX_SHARED_LIBRARY
-)
+mark_as_advanced (${PackageVariables})
 
 ################################################################################
 # Imported target

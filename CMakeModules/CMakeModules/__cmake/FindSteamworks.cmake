@@ -7,11 +7,9 @@
 #   * Variables:
 #       Steamworks_FOUND
 #       Steamworks_INCLUDE_DIR
-#       Steamworks_LIBRARY
 #       Steamworks_LIBRARIES
 #       Steamworks_SHARED_LIBRARIES
 ################################################################################
-
 
 # Search path suffix corresponding to the platform
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
@@ -52,10 +50,12 @@ find_path (Steam_INCLUDE_DIR
   NAMES
     ${HeaderFile}
   PATHS
-    "$ENV{IVENT_SOTS_EXTERNALIBS}/Steamworks"
+    "$ENV{__EXTERNAL_LIBS}/Steamworks"
     "$ENV{STEAM_SDK}"
   PATH_SUFFIXES
     "/public"
+    "/steamworks_sdk_142/sdk/public"
+    "/steamworks_sdk_135/sdk/public"
 )
 if (NOT Steam_INCLUDE_DIR)
   message (FATAL_ERROR "Unable to find header file: \"${HeaderFile}\"")
@@ -68,18 +68,22 @@ endif ()
 ################################################################################
 
 set (LibraryFile "steam_api")
-if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows"
+  AND "${CMAKE_SIZEOF_VOID_P}" STREQUAL "8"
+)
   set (LibraryFile "${LibraryFile}64")
 endif ()
 find_library (steam_api_LIBRARY
   NAMES
     ${LibraryFile}
   PATHS
-    "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
+    "$ENV{__EXTERNAL_LIBS}/Steamworks"
     "$ENV{STEAM_SDK}"
   PATH_SUFFIXES
     "/redistributable_bin"
     "/redistributable_bin/${LibrarySearchPathSuffix}"
+    "/steamworks_sdk_142/sdk/redistributable_bin/${LibrarySearchPathSuffix}"
+    "/steamworks_sdk_135/sdk/redistributable_bin/${LibrarySearchPathSuffix}"
 )
 # Hide internal implementation details from user
 set_property (CACHE steam_api_LIBRARY PROPERTY TYPE INTERNAL)
@@ -95,7 +99,7 @@ if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     NAMES
       ${LibraryFile}
     PATHS
-      "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
+      "$ENV{__EXTERNAL_LIBS}/Steamworks"
       "$ENV{STEAM_SDK}"
     PATH_SUFFIXES
       "/redistributable_bin"
@@ -111,17 +115,21 @@ if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
 endif ()
 
 set (LibraryFile "sdkencryptedappticket")
-if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows"
+  AND "${CMAKE_SIZEOF_VOID_P}" STREQUAL "8"
+)
   set (LibraryFile "${LibraryFile}64")
 endif ()
 find_library (sdkencryptedappticket_LIBRARY
   NAMES
     ${LibraryFile}
   PATHS
-    "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
+    "$ENV{__EXTERNAL_LIBS}/Steamworks"
     "$ENV{STEAM_SDK}"
   PATH_SUFFIXES
     "/public/steam/lib/${LibrarySearchPathSuffix}"
+    "/steamworks_sdk_142/sdk/public/steam/lib/${LibrarySearchPathSuffix}"
+    "/steamworks_sdk_135/sdk/public/steam/lib/${LibrarySearchPathSuffix}"
 )
 # Hide internal implementation details from user
 set_property (CACHE sdkencryptedappticket_LIBRARY PROPERTY TYPE INTERNAL)
@@ -137,10 +145,12 @@ if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     NAMES
       ${LibraryFile}
     PATHS
-      "${IVENT_SOTS_EXTERNALIBS}/Steamworks"
+      "$ENV{__EXTERNAL_LIBS}/Steamworks"
       "$ENV{STEAM_SDK}"
     PATH_SUFFIXES
       "/public/steam/lib/${LibrarySearchPathSuffix}"
+      "/steamworks_sdk_142/sdk/public/steam/lib/${LibrarySearchPathSuffix}"
+      "/steamworks_sdk_135/sdk/public/steam/lib/${LibrarySearchPathSuffix}"
   )
   # Hide internal implementation details from user
   set_property (CACHE sdkencryptedappticket_SHARED_LIBRARY PROPERTY TYPE INTERNAL)
@@ -156,18 +166,20 @@ endif ()
 ################################################################################
 
 include (FindPackageHandleStandardArgs)
+
+set (PackageVariables
+  Steamworks_INCLUDE_DIR
+  Steamworks_LIBRARIES
+)
+if (SDL2_SHARED_LIBRARY)
+  set (PackageVariables ${PackageVariables} Steamworks_SHARED_LIBRARIES)
+endif ()
+
 find_package_handle_standard_args (Steamworks
   DEFAULT_MSG
-    Steamworks_INCLUDE_DIR
-    Steamworks_LIBRARIES
-    Steamworks_SHARED_LIBRARIES
+    ${PackageVariables}
 )
-mark_as_advanced (
-    Steamworks_INCLUDE_DIR
-    Steamworks_LIBRARY
-    Steamworks_LIBRARIES
-    Steamworks_SHARED_LIBRARIES
-)
+mark_as_advanced (${PackageVariables})
 
 ################################################################################
 # Imported target

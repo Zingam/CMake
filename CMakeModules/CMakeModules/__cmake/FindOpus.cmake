@@ -32,7 +32,7 @@ find_path (Opus_INCLUDE_DIR
   NAMES
     ${HeaderFile}
   PATHS
-    "$ENV{IVENT_SOTS_EXTERNALIBS}/Opus"
+    "$ENV{__EXTERNAL_LIBS}/Opus"
   PATH_SUFFIXES
     "/include"
 )
@@ -49,7 +49,7 @@ find_library (Opus_LIBRARY
   NAMES
     ${LibraryFile}
   PATHS
-    "$ENV{IVENT_SOTS_EXTERNALIBS}/Opus"
+    "$ENV{__EXTERNAL_LIBS}/Opus"
   PATH_SUFFIXES
     "/lib/${LibrarySearchPathSuffix}"
 )
@@ -63,7 +63,7 @@ if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     NAMES
       ${LibraryFile}
     PATHS
-      "$ENV{IVENT_SOTS_EXTERNALIBS}/Opus"
+      "$ENV{__EXTERNAL_LIBS}/Opus"
     PATH_SUFFIXES
       "/bin/${LibrarySearchPathSuffix}"
   )
@@ -79,17 +79,20 @@ endif ()
 ################################################################################
 
 include (FindPackageHandleStandardArgs)
+
+set (PackageVariables
+  Opus_INCLUDE_DIR
+  Opus_LIBRARY
+)
+if (Opus_SHARED_LIBRARY)
+  set (PackageVariables ${PackageVariables} Opus_SHARED_LIBRARY)
+endif ()
+
 find_package_handle_standard_args (Opus
   DEFAULT_MSG
-    Opus_INCLUDE_DIR
-    Opus_LIBRARY
-    Opus_SHARED_LIBRARY
+    ${PackageVariables}
 )
-mark_as_advanced (
-    Opus_INCLUDE_DIR
-    Opus_LIBRARY
-    Opus_SHARED_LIBRARY
-)
+mark_as_advanced (${PackageVariables})
 
 ################################################################################
 # Imported target
